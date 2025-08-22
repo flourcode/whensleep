@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Caffulator - Daily Caffeine Calculator</title>
+<title>CaffApp - Daily Caffeine Calculator</title>
 <meta name="description" content="See exactly how much caffeine will be in your system at bedtime." />
 <link rel="icon" type="image/svg+xml" href="tea.svg" />
 <link rel="apple-touch-icon" sizes="180x180" href="tea.svg" />
@@ -743,9 +743,25 @@ body {
    padding: 40px 32px 32px;
  }
  
- .title {
-   font-size: 28px;
- }
+.title {
+  font-size: 28px;
+}
+
+.title-badge {
+  padding: 14px 24px;
+  border-radius: 14px;
+}
+
+.emoji-badge {
+  width: 56px;
+  height: 56px;
+  font-size: 28px;
+  border-radius: 14px;
+}
+
+.title-container {
+  gap: 20px;
+}
  
  .subtitle {
    font-size: 16px;
@@ -793,15 +809,62 @@ body {
    font-size: 40px;
  }
 }
+.title-container {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 16px;
+ margin-bottom: 8px;
+}
+
+.emoji-badge {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ transition: var(--transition);
+ backdrop-filter: blur(10px);
+}
+
+.title-badge {
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ border-radius: 12px;
+ padding: 12px 20px;
+ transition: var(--transition);
+ backdrop-filter: blur(10px);
+}
+
+.title-badge:hover {
+ background: rgba(0, 122, 255, 0.1);
+ border-color: rgba(0, 122, 255, 0.2);
+ transform: translateY(-1px);
+}
+
+.title {
+ font-size: 24px;
+ font-weight: 700;
+ letter-spacing: -0.5px;
+ color: var(--text);
+ margin: 0;
+}
 </style>
 </head>
 <body>
   <div class="app">
     <div class="header">
-	      <h1 class="title">🍵</h1>
-      <h1 class="title">Caffulator</h1>
-      <p class="subtitle">Track caffeine intake and see bedtime levels based on its average halflife of 5 hours.</p>
+  <div class="title-container">
+    <div class="title-badge">
+      <h1 class="title">🍵 CaffApp</h1>
     </div>
+  </div>
+  <p class="subtitle">Track caffeine intake and see bedtime levels based on its average halflife of 5 hours.</p>
+</div>
     
     <div class="main">
       <div class="bedtime-selector">
