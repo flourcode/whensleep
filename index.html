@@ -133,101 +133,6 @@
     margin-bottom: 20px;
   }
   
-  .time-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 16px;
-    color: var(--text);
-    font-size: 17px;
-    text-align: center;
-    outline: none;
-    transition: all 0.2s ease;
-    margin-top: 12px;
-  }
-  
-  .time-input:focus {
-    border-color: var(--accent);
-  }
-  
-  .time-input.hidden {
-    display: none;
-  }
-  
-  .time-picker {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 12px;
-  }
-  
-  .time-picker.hidden {
-    display: none;
-  }
-  
-  .time-wheel {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .hour-wheel, .minute-wheel, .ampm-wheel {
-    flex: 1;
-    text-align: center;
-  }
-  
-  .wheel-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-    font-weight: 600;
-  }
-  
-  .wheel-options {
-    max-height: 120px;
-    overflow-y: auto;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.03);
-  }
-  
-  .wheel-option {
-    padding: 12px 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 6px;
-    margin: 2px;
-  }
-  
-  .wheel-option:hover {
-    background: rgba(0, 122, 255, 0.1);
-    color: var(--accent);
-  }
-  
-  .wheel-option.selected {
-    background: var(--accent);
-    color: white;
-    font-weight: 600;
-  }
-  
-  /* Custom scrollbar for webkit browsers */
-  .wheel-options::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .wheel-options::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .wheel-options::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-  }
-  
   .now-btn, .time-btn {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
@@ -248,6 +153,49 @@
   }
   
   .now-btn.selected, .time-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+  
+  .time-picker {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 12px;
+  }
+  
+  .time-picker.hidden {
+    display: none;
+  }
+  
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  
+  .time-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px 8px;
+    color: var(--text);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .time-option:hover {
+    border-color: var(--accent);
+    background: rgba(0, 122, 255, 0.1);
+  }
+  
+  .time-option.selected {
     border-color: var(--accent);
     background: var(--accent);
     color: white;
@@ -333,6 +281,33 @@
     color: var(--text-secondary);
   }
   
+  .calculate-btn {
+    width: 100%;
+    background: var(--success);
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 32px;
+    transition: all 0.2s ease;
+    letter-spacing: -0.2px;
+  }
+  
+  .calculate-btn:hover {
+    background: #28B946;
+    transform: translateY(-1px);
+  }
+  
+  .calculate-btn:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    transform: none;
+  }
+  
   .results {
     background: rgba(255, 255, 255, 0.03);
     padding: 32px;
@@ -354,7 +329,8 @@
   }
   
   .timeline-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 80px 80px; /* Use grid for aligned columns */
     align-items: center;
     padding: 16px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -367,21 +343,23 @@
   .timeline-time {
     font-size: 17px;
     font-weight: 600;
-    min-width: 80px;
+    text-align: right;
   }
   
   .timeline-amount {
-    flex: 1;
-    text-align: center;
     font-size: 15px;
     color: var(--text-secondary);
+    min-width: 80px;
+    text-align: right;
+    padding-right: 12px;
   }
-  
+
   .timeline-status {
     font-size: 13px;
     padding: 4px 8px;
     border-radius: 6px;
     font-weight: 600;
+    text-align: left;
   }
   
   .status-extreme {
@@ -422,12 +400,12 @@
     font-size: 24px;
     font-weight: 700;
     color: var(--success);
-    margin-bottom: 8px;
   }
   
   .sleep-note {
     font-size: 15px;
     color: var(--text-secondary);
+    margin-top: 8px;
   }
   
   .reset-btn {
@@ -448,33 +426,6 @@
     opacity: 0.8;
   }
   
-  .calculate-btn {
-    width: 100%;
-    background: var(--success);
-    border: none;
-    border-radius: 12px;
-    padding: 20px;
-    color: white;
-    font-size: 19px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 32px;
-    transition: all 0.2s ease;
-    letter-spacing: -0.2px;
-  }
-  
-  .calculate-btn:hover {
-    background: #28B946;
-    transform: translateY(-1px);
-  }
-  
-  .calculate-btn:disabled {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
-    cursor: not-allowed;
-    transform: none;
-  }
-  
   .footer {
     text-align: center;
     padding: 24px;
@@ -489,6 +440,7 @@
     }
     
     .timeline-item {
+      display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
@@ -507,13 +459,135 @@
       width: 100%;
     }
     
-    .time-wheel {
-      flex-direction: column;
-      gap: 16px;
+    .time-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .info-section {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 40px 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .info-content {
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  .info-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .info-subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+  
+  .info-text {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-size: 15px;
+  }
+  
+  .disclaimer {
+    background: rgba(255, 149, 0, 0.1);
+    border: 1px solid rgba(255, 149, 0, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .disclaimer-text {
+    color: var(--warning);
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+  }
+  
+  .formula {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    font-size: 14px;
+    text-align: center;
+    color: var(--accent);
+    border: 1px solid rgba(0, 122, 255, 0.2);
+  }
+  
+  .factor-list {
+    list-style: none;
+    margin: 16px 0;
+  }
+  
+  .factor-list li::before {
+    content: "•";
+    color: var(--accent);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+  
+  .factor-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  
+  .sleep-ready-highlight {
+    background: rgba(48, 209, 88, 0.1);
+    color: var(--success);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  
+  .half-life-highlight {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 480px) {
+    .info-section {
+      padding: 32px 20px;
     }
     
-    .hour-wheel, .minute-wheel, .ampm-wheel {
-      flex: none;
+    .info-title {
+      font-size: 18px;
+    }
+    
+    .info-subtitle {
+      font-size: 16px;
+      margin-top: 24px;
+    }
+    
+    .formula {
+      font-size: 12px;
+      padding: 12px;
+    }
+    
+    .timeline-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .timeline-amount {
+      text-align: left;
     }
   }
 </style>
@@ -530,19 +604,19 @@
         <div class="input-group">
           <label class="label">What did you drink?</label>
           <div class="drink-grid">
-            <button class="drink-btn" data-caffeine="95">
+            <button class="drink-btn" data-caffeine="95" data-name="Coffee">
               <div class="drink-name">Coffee</div>
               <div class="drink-caffeine">95mg</div>
             </button>
-            <button class="drink-btn" data-caffeine="63">
+            <button class="drink-btn" data-caffeine="63" data-name="Espresso">
               <div class="drink-name">Espresso</div>
               <div class="drink-caffeine">63mg</div>
             </button>
-            <button class="drink-btn" data-caffeine="80">
+            <button class="drink-btn" data-caffeine="80" data-name="Energy Drink">
               <div class="drink-name">Energy Drink</div>
               <div class="drink-caffeine">80mg</div>
             </button>
-            <button class="drink-btn" data-caffeine="47">
+            <button class="drink-btn" data-caffeine="47" data-name="Black Tea">
               <div class="drink-name">Black Tea</div>
               <div class="drink-caffeine">47mg</div>
             </button>
@@ -569,33 +643,14 @@
             <button class="now-btn selected" id="nowBtn">Right Now</button>
             <button class="time-btn" id="timeBtn">Different Time</button>
           </div>
-          <input type="time" class="time-input hidden" id="timeInput">
           <div class="time-picker hidden" id="timePicker">
-            <div class="time-wheel">
-              <div class="hour-wheel">
-                <div class="wheel-label">Hour</div>
-                <div class="wheel-options" id="hourWheel">
-                  <!-- Hours will be generated -->
-                </div>
-              </div>
-              <div class="minute-wheel">
-                <div class="wheel-label">Minute</div>
-                <div class="wheel-options" id="minuteWheel">
-                  <!-- Minutes will be generated -->
-                </div>
-              </div>
-              <div class="ampm-wheel">
-                <div class="wheel-label">AM/PM</div>
-                <div class="wheel-options" id="ampmWheel">
-                  <div class="wheel-option" data-value="AM">AM</div>
-                  <div class="wheel-option" data-value="PM">PM</div>
-                </div>
-              </div>
+            <div class="time-grid" id="timeGrid">
+              <!-- Time options will be generated -->
             </div>
           </div>
         </div>
         
-        <button class="calculate-btn" id="calculateBtn">When Sleep?</button>
+        <button class="calculate-btn" id="calculateBtn">Add to Log</button>
       </div>
       
       <div class="results" id="results">
@@ -604,11 +659,27 @@
         </ul>
         
         <div class="sleep-recommendation">
-          <div class="sleep-time" id="sleepTime">10:00 PM</div>
+          <div class="sleep-time" id="sleepTime"></div>
           <div class="sleep-note">Safe bedtime for good sleep</div>
         </div>
         
-        <button class="reset-btn" onclick="reset()">Try Another Drink</button>
+        <button class="reset-btn" id="resetBtn">Clear All Drinks</button>
+      </div>
+      
+      <div class="info-section">
+        <div class="disclaimer">
+          <div class="disclaimer-text">
+            ⚠️ This is not medical advice and should not be relied upon for actual sleep management
+          </div>
+        </div>
+        
+        <h3 class="info-title">How It Works 🧠</h3>
+        <p class="info-text">
+          This app uses a widely-accepted model for caffeine clearance based on a half-life of 5 hours. This means that for every 5 hours that pass, the caffeine in your system is halved. The app's timeline shows how the caffeine from each drink you add cumulatively affects your total level over time, helping you visualize when you will be "Sleep Ready" (<5mg).
+        </p>
+        <p class="info-text">
+          Keep in mind that individual metabolism can vary significantly due to factors like genetics, age, and liver health. This tool provides a useful estimate, but your personal experience may differ.
+        </p>
       </div>
       
       <div class="footer">
@@ -618,394 +689,316 @@
   </div>
 
 <script>
-let selectedCaffeine = 0;
-let selectedTime = '';
-let servings = 1;
-let useCurrentTime = true;
-let selectedHour = 12;
-let selectedMinute = 0;
-let selectedAMPM = 'PM';
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Core Logic ---
+    const CAFFEINE_HALF_LIFE = 5; // hours
+    const SLEEP_READY_THRESHOLD = 5; // mg
 
-// Set default time to current time
-function setDefaultTime() {
-  const now = new Date();
-  const timeString = now.toTimeString().slice(0, 5);
-  document.getElementById('timeInput').value = timeString;
-  
-  // Set picker to current time
-  let hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  if (hours === 0) hours = 12;
-  
-  selectedHour = hours;
-  selectedMinute = Math.round(minutes / 15) * 15; // Round to nearest 15 minutes
-  selectedAMPM = ampm;
-  
-  if (useCurrentTime) {
-    selectedTime = timeString;
-  }
-}
+    let caffeineLog = [];
 
-// Generate time picker options
-function generateTimePicker() {
-  const hourWheel = document.getElementById('hourWheel');
-  const minuteWheel = document.getElementById('minuteWheel');
-  
-  // Generate hours (1-12)
-  hourWheel.innerHTML = '';
-  for (let i = 1; i <= 12; i++) {
-    const option = document.createElement('div');
-    option.className = 'wheel-option';
-    option.dataset.value = i;
-    option.textContent = i;
-    if (i === selectedHour) option.classList.add('selected');
-    hourWheel.appendChild(option);
-  }
-  
-  // Generate minutes (0, 15, 30, 45)
-  minuteWheel.innerHTML = '';
-  for (let i = 0; i < 60; i += 15) {
-    const option = document.createElement('div');
-    option.className = 'wheel-option';
-    option.dataset.value = i;
-    option.textContent = i.toString().padStart(2, '0');
-    if (i === selectedMinute) option.classList.add('selected');
-    minuteWheel.appendChild(option);
-  }
-  
-  // Set AM/PM selection
-  document.querySelectorAll('#ampmWheel .wheel-option').forEach(option => {
-    option.classList.toggle('selected', option.dataset.value === selectedAMPM);
-  });
-}
+    // --- DOM Elements ---
+    const nowBtn = document.getElementById('nowBtn');
+    const timeBtn = document.getElementById('timeBtn');
+    const timePicker = document.getElementById('timePicker');
+    const timeGrid = document.getElementById('timeGrid');
+    const drinkButtons = document.querySelectorAll('.drink-btn');
+    const decreaseBtn = document.getElementById('decreaseBtn');
+    const increaseBtn = document.getElementById('increaseBtn');
+    const servingCountEl = document.getElementById('servingCount');
+    const doseSummaryEl = document.getElementById('doseSummary');
+    const totalCaffeineEl = document.getElementById('totalCaffeine');
+    const doseNoteEl = doseSummaryEl.querySelector('.dose-note');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const resultsSection = document.getElementById('results');
+    const timelineList = document.getElementById('timeline');
+    const sleepTimeEl = document.getElementById('sleepTime');
+    const resetBtn = document.getElementById('resetBtn');
 
-// Handle time picker selection
-function setupTimePicker() {
-  const hourWheel = document.getElementById('hourWheel');
-  const minuteWheel = document.getElementById('minuteWheel');
-  const ampmWheel = document.getElementById('ampmWheel');
-  
-  // Hour selection
-  hourWheel.addEventListener('click', (e) => {
-    if (e.target.classList.contains('wheel-option')) {
-      hourWheel.querySelectorAll('.wheel-option').forEach(opt => opt.classList.remove('selected'));
-      e.target.classList.add('selected');
-      selectedHour = parseInt(e.target.dataset.value);
-      updateSelectedTime();
+    // --- State Variables ---
+    let selectedDrink = null;
+    let selectedTime = null;
+    let servings = 1;
+    let useCurrentTime = true;
+
+    // --- Local Storage Management ---
+    function saveLogToLocalStorage() {
+      localStorage.setItem('caffeineLog', JSON.stringify(caffeineLog));
     }
-  });
-  
-  // Minute selection
-  minuteWheel.addEventListener('click', (e) => {
-    if (e.target.classList.contains('wheel-option')) {
-      minuteWheel.querySelectorAll('.wheel-option').forEach(opt => opt.classList.remove('selected'));
-      e.target.classList.add('selected');
-      selectedMinute = parseInt(e.target.dataset.value);
-      updateSelectedTime();
-    }
-  });
-  
-  // AM/PM selection
-  ampmWheel.addEventListener('click', (e) => {
-    if (e.target.classList.contains('wheel-option')) {
-      ampmWheel.querySelectorAll('.wheel-option').forEach(opt => opt.classList.remove('selected'));
-      e.target.classList.add('selected');
-      selectedAMPM = e.target.dataset.value;
-      updateSelectedTime();
-    }
-  });
-}
 
-// Update selected time from picker
-function updateSelectedTime() {
-  let hours24 = selectedHour;
-  if (selectedAMPM === 'PM' && selectedHour !== 12) {
-    hours24 += 12;
-  } else if (selectedAMPM === 'AM' && selectedHour === 12) {
-    hours24 = 0;
-  }
-  
-  const timeString = `${hours24.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
-  selectedTime = timeString;
-  
-  // Only update button state - no calculations
-  updateCalculateButton();
-}
-
-// Handle time mode selection
-function setupTimeMode() {
-  const nowBtn = document.getElementById('nowBtn');
-  const timeBtn = document.getElementById('timeBtn');
-  const timeInput = document.getElementById('timeInput');
-  const timePicker = document.getElementById('timePicker');
-  
-  nowBtn.addEventListener('click', () => {
-    useCurrentTime = true;
-    nowBtn.classList.add('selected');
-    timeBtn.classList.remove('selected');
-    timeInput.classList.add('hidden');
-    timePicker.classList.add('hidden');
-    
-    // Set current time but don't calculate
-    setDefaultTime();
-    updateCalculateButton();
-  });
-  
-  timeBtn.addEventListener('click', () => {
-    useCurrentTime = false;
-    timeBtn.classList.add('selected');
-    nowBtn.classList.remove('selected');
-    timeInput.classList.add('hidden');
-    timePicker.classList.remove('hidden');
-    
-    // Initialize picker but don't calculate
-    generateTimePicker();
-    updateSelectedTime();
-    updateCalculateButton();
-  });
-}
-
-// Handle serving controls
-function setupServingControls() {
-  const decreaseBtn = document.getElementById('decreaseBtn');
-  const increaseBtn = document.getElementById('increaseBtn');
-  const servingCount = document.getElementById('servingCount');
-  
-  decreaseBtn.addEventListener('click', () => {
-    if (servings > 1) {
-      servings--;
-      servingCount.textContent = servings;
-      updateDoseSummary();
-      // No auto-calculation
-    }
-  });
-  
-  increaseBtn.addEventListener('click', () => {
-    if (servings < 10) { // Reasonable limit
-      servings++;
-      servingCount.textContent = servings;
-      updateDoseSummary();
-      // No auto-calculation
-    }
-  });
-  
-  // Update button states
-  const updateButtons = () => {
-    decreaseBtn.disabled = servings <= 1;
-    increaseBtn.disabled = servings >= 10;
-  };
-  
-  // Call initially and after each change
-  updateButtons();
-  decreaseBtn.addEventListener('click', updateButtons);
-  increaseBtn.addEventListener('click', updateButtons);
-}
-
-// Update dose summary
-function updateDoseSummary() {
-  if (selectedCaffeine === 0) return;
-  
-  const totalCaffeine = selectedCaffeine * servings;
-  const doseSummary = document.getElementById('doseSummary');
-  const totalCaffeineEl = document.getElementById('totalCaffeine');
-  const doseNote = doseSummary.querySelector('.dose-note');
-  
-  totalCaffeineEl.textContent = `${totalCaffeine}mg total`;
-  
-  // Determine dose level
-  let note = '';
-  if (totalCaffeine <= 100) {
-    note = 'Moderate dose';
-  } else if (totalCaffeine <= 200) {
-    note = 'High dose';
-  } else if (totalCaffeine <= 400) {
-    note = 'Very high dose';
-  } else {
-    note = 'Extreme dose - consider reducing';
-  }
-  
-  doseNote.textContent = note;
-  doseSummary.classList.add('show');
-  
-  // Enable calculate button
-  updateCalculateButton();
-}
-
-// Update calculate button state
-function updateCalculateButton() {
-  const calculateBtn = document.getElementById('calculateBtn');
-  const hasSelection = selectedCaffeine > 0 && selectedTime;
-  
-  calculateBtn.disabled = !hasSelection;
-  
-  if (hasSelection) {
-    calculateBtn.textContent = 'When Can I Sleep?';
-  } else if (!selectedCaffeine) {
-    calculateBtn.textContent = 'Select a drink first';
-  } else {
-    calculateBtn.textContent = 'When Can I Sleep?';
-  }
-}
-
-// Handle drink selection
-function setupDrinkButtons() {
-  const buttons = document.querySelectorAll('.drink-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove selected class from all buttons
-      buttons.forEach(b => b.classList.remove('selected'));
-      
-      // Add selected class to clicked button
-      btn.classList.add('selected');
-      
-      // Store caffeine amount
-      selectedCaffeine = parseInt(btn.dataset.caffeine);
-      
-      // Update dose summary
-      updateDoseSummary();
-      
-      // No auto-calculation - user clicks button
-    });
-  });
-}
-
-// Handle time input
-function setupTimeInput() {
-  const timeInput = document.getElementById('timeInput');
-  
-  timeInput.addEventListener('change', (e) => {
-    selectedTime = e.target.value;
-    // Only update button state - no calculations
-    updateCalculateButton();
-  });
-}
-
-// Setup calculate button
-function setupCalculateButton() {
-  const calculateBtn = document.getElementById('calculateBtn');
-  
-  calculateBtn.addEventListener('click', () => {
-    if (selectedCaffeine > 0 && selectedTime) {
-      calculateTimeline();
-    }
-  });
-  
-  // Initial state
-  updateCalculateButton();
-}
-
-// Calculate caffeine timeline (with scroll)
-function calculateTimeline() {
-  if (!selectedCaffeine || !selectedTime) return;
-  
-  const timeline = document.getElementById('timeline');
-  const results = document.getElementById('results');
-  
-  // Parse the input time
-  const [hours, minutes] = selectedTime.split(':').map(Number);
-  let currentTime = new Date();
-  currentTime.setHours(hours, minutes, 0, 0);
-  
-  // Calculate total caffeine
-  const totalCaffeine = selectedCaffeine * servings;
-  
-  // Generate timeline
-  timeline.innerHTML = '';
-  let currentCaffeine = totalCaffeine;
-  let safeBedtime = '';
-  
-  for (let i = 0; i <= 24; i += 2) {
-    const timeStr = formatTime(new Date(currentTime.getTime() + i * 60 * 60 * 1000));
-    const caffeineAmount = Math.round(currentCaffeine);
-    
-    // Determine status
-    let status = '';
-    let statusClass = '';
-    
-    if (caffeineAmount > 100) {
-      status = 'Wired';
-      statusClass = 'status-extreme';
-    } else if (caffeineAmount > 50) {
-      status = 'Wide Awake';
-      statusClass = 'status-high';
-    } else if (caffeineAmount > 25) {
-      status = 'Still Alert';
-      statusClass = 'status-medium';
-    } else if (caffeineAmount > 5) {
-      status = 'Drowsy';
-      statusClass = 'status-low';
-    } else {
-      status = 'Sleep Ready';
-      statusClass = 'status-clear';
-      if (!safeBedtime) {
-        safeBedtime = timeStr;
+    function loadLogFromLocalStorage() {
+      const savedLog = localStorage.getItem('caffeineLog');
+      if (savedLog) {
+        caffeineLog = JSON.parse(savedLog).map(item => ({
+          ...item,
+          time: new Date(item.time)
+        }));
       }
     }
-    
-    const item = document.createElement('li');
-    item.className = 'timeline-item';
-    item.innerHTML = `
-      <div class="timeline-time">${timeStr}</div>
-      <div class="timeline-amount">${caffeineAmount}mg</div>
-      <div class="timeline-status ${statusClass}">${status}</div>
-    `;
-    
-    timeline.appendChild(item);
-    
-    // Calculate next caffeine amount (half-life of 5 hours)
-    currentCaffeine = currentCaffeine * Math.pow(0.5, 2/5);
-  }
-  
-  // Update safe bedtime
-  document.getElementById('sleepTime').textContent = safeBedtime || 'Tomorrow';
- 
- // Show results and scroll to them
- results.classList.add('show');
- results.scrollIntoView({ behavior: 'smooth' });
-}
 
-// Format time
-function formatTime(date) {
- return date.toLocaleTimeString('en-US', { 
-   hour: 'numeric', 
-   minute: '2-digit',
-   hour12: true 
- });
-}
+    // --- Calculation Functions ---
+    function calculateCaffeineAtTime(targetTime) {
+      let totalCaffeine = 0;
+      caffeineLog.forEach(entry => {
+        const elapsedHours = (targetTime.getTime() - entry.time.getTime()) / (1000 * 60 * 60);
+        if (elapsedHours >= 0) {
+          totalCaffeine += entry.amount * Math.pow(0.5, elapsedHours / CAFFEINE_HALF_LIFE);
+        }
+      });
+      return totalCaffeine;
+    }
 
-// Reset function
-function reset() {
- document.getElementById('results').classList.remove('show');
- document.getElementById('doseSummary').classList.remove('show');
- document.querySelectorAll('.drink-btn').forEach(btn => {
-   btn.classList.remove('selected');
- });
- 
- // Reset time mode to "Right Now"
- useCurrentTime = true;
- document.getElementById('nowBtn').classList.add('selected');
- document.getElementById('timeBtn').classList.remove('selected');
- document.getElementById('timeInput').classList.add('hidden');
- document.getElementById('timePicker').classList.add('hidden');
- 
- selectedCaffeine = 0;
- servings = 1;
- document.getElementById('servingCount').textContent = '1';
- setDefaultTime();
- updateCalculateButton();
-}
+    // --- Rendering and UI Update Functions ---
+    function getStatusBadge(caffeineAmount) {
+      if (caffeineAmount > 100) {
+        return { name: 'Wired', class: 'status-extreme' };
+      } else if (caffeineAmount > 50) {
+        return { name: 'Wide Awake', class: 'status-high' };
+      } else if (caffeineAmount > 25) {
+        return { name: 'Still Alert', class: 'status-medium' };
+      } else if (caffeineAmount > SLEEP_READY_THRESHOLD) {
+        return { name: 'Drowsy', class: 'status-low' };
+      } else {
+        return { name: 'Sleep Ready', class: 'status-clear' };
+      }
+    }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
- setDefaultTime();
- setupDrinkButtons();
- setupTimeInput();
- setupServingControls();
- setupTimeMode();
- setupTimePicker();
- setupCalculateButton();
+    function updateTimeline() {
+      timelineList.innerHTML = '';
+      
+      const startTime = new Date();
+      startTime.setMinutes(0, 0, 0);
+      
+      const totalCurrentCaffeine = calculateCaffeineAtTime(new Date());
+      let sleepReadyTime;
+
+      // Calculate precise sleep ready time based on total current caffeine
+      if (totalCurrentCaffeine <= SLEEP_READY_THRESHOLD) {
+          sleepReadyTime = new Date();
+      } else {
+          const hoursToSleepReady = (Math.log(totalCurrentCaffeine / SLEEP_READY_THRESHOLD) / Math.log(2)) * CAFFEINE_HALF_LIFE;
+          sleepReadyTime = new Date(new Date().getTime() + hoursToSleepReady * 60 * 60 * 1000);
+      }
+      
+      // If there are no drinks, don't show the timeline or results section
+      if (caffeineLog.length === 0) {
+          resultsSection.classList.remove('show');
+          return;
+      }
+      
+      let previousStatus = '';
+      for (let i = 0; i <= 24; i++) {
+        const targetTime = new Date(startTime.getTime() + i * 60 * 60 * 1000);
+        const currentCaffeine = calculateCaffeineAtTime(targetTime);
+        const status = getStatusBadge(currentCaffeine);
+
+        // Only add items if the status has changed from the previous hour
+        if (status.name !== previousStatus && status.name !== 'Sleep Ready') {
+          const item = document.createElement('li');
+          item.className = 'timeline-item';
+          item.innerHTML = `
+            <div class="timeline-status ${status.class}">${status.name}</div>
+            <div class="timeline-amount">${Math.round(currentCaffeine)}mg</div>
+            <div class="timeline-time">${formatTime(targetTime)}</div>
+          `;
+          timelineList.appendChild(item);
+          previousStatus = status.name;
+        }
+      }
+      
+      // Always show the final Sleep Ready entry
+      const finalItem = document.createElement('li');
+      finalItem.className = 'timeline-item';
+      finalItem.innerHTML = `
+        <div class="timeline-status ${getStatusBadge(0).class}">Sleep Ready</div>
+        <div class="timeline-amount"><5mg</div>
+        <div class="timeline-time">${formatTime(sleepReadyTime)}</div>
+      `;
+      timelineList.appendChild(finalItem);
+      
+      sleepTimeEl.textContent = formatTimeWithTomorrow(sleepReadyTime, new Date());
+
+      resultsSection.classList.add('show');
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateDoseSummary() {
+      if (!selectedDrink) return;
+      
+      const totalCaffeine = selectedDrink.amount * servings;
+      totalCaffeineEl.textContent = `${totalCaffeine}mg total`;
+      
+      let note = '';
+      if (totalCaffeine <= 100) {
+        note = 'Moderate dose';
+      } else if (totalCaffeine <= 200) {
+        note = 'High dose';
+      } else if (totalCaffeine <= 400) {
+        note = 'Very high dose';
+      } else {
+        note = 'Extreme dose - consider reducing';
+      }
+      
+      doseNoteEl.textContent = note;
+      doseSummaryEl.classList.add('show');
+      updateAddButtonState();
+    }
+
+    function generateTimePicker() {
+      timeGrid.innerHTML = '';
+      const now = new Date();
+      const currentHour = now.getHours();
+      
+      for (let i = 0; i < 24; i++) {
+          const button = document.createElement('button');
+          button.className = 'time-option';
+          let displayHour = i;
+          let ampm = 'AM';
+          
+          if (i >= 12) {
+            ampm = 'PM';
+            if (i > 12) displayHour = i - 12;
+          }
+          if (i === 0) displayHour = 12;
+          
+          button.textContent = `${displayHour} ${ampm}`;
+          button.dataset.hour = i;
+          
+          button.addEventListener('click', () => {
+              document.querySelectorAll('.time-option').forEach(opt => opt.classList.remove('selected'));
+              button.classList.add('selected');
+              selectedTime = new Date().setHours(parseInt(button.dataset.hour), 0, 0);
+              updateAddButtonState();
+          });
+          timeGrid.appendChild(button);
+      }
+    }
+
+    // --- Helper Functions ---
+    function formatTime(date) {
+      const d = new Date(date);
+      const hours = d.getHours();
+      let displayHour = hours;
+      let ampm = 'AM';
+      
+      if (hours >= 12) {
+        ampm = 'PM';
+        if (hours > 12) displayHour = hours - 12;
+      }
+      if (hours === 0) displayHour = 12;
+      
+      return `${displayHour} ${ampm}`;
+    }
+
+    function formatTimeWithTomorrow(sleepTime, startTime) {
+      const sleepDay = sleepTime.getDate();
+      const startDay = startTime.getDate();
+      const timeStr = formatTime(sleepTime);
+      
+      if (sleepDay > startDay || sleepTime.getMonth() > startTime.getMonth()) {
+        return `${timeStr} Tomorrow`;
+      } else {
+        return timeStr;
+      }
+    }
+
+    function updateAddButtonState() {
+        calculateBtn.disabled = !(selectedDrink && selectedTime);
+    }
+
+    function resetApp() {
+        caffeineLog = [];
+        localStorage.removeItem('caffeineLog');
+        resultsSection.classList.remove('show');
+        doseSummaryEl.classList.remove('show');
+        drinkButtons.forEach(btn => btn.classList.remove('selected'));
+        nowBtn.classList.add('selected');
+        timeBtn.classList.remove('selected');
+        timePicker.classList.add('hidden');
+        selectedDrink = null;
+        servings = 1;
+        servingCountEl.textContent = '1';
+        selectedTime = new Date().setMinutes(0,0,0);
+        updateAddButtonState();
+        updateTimeline();
+    }
+
+    // --- Event Listeners and Initialization ---
+    drinkButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        drinkButtons.forEach(dBtn => dBtn.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedDrink = {
+          name: btn.dataset.name,
+          amount: parseInt(btn.dataset.caffeine)
+        };
+        updateDoseSummary();
+      });
+    });
+
+    decreaseBtn.addEventListener('click', () => {
+      if (servings > 1) {
+        servings--;
+        servingCountEl.textContent = servings;
+        updateDoseSummary();
+      }
+    });
+
+    increaseBtn.addEventListener('click', () => {
+      if (servings < 10) {
+        servings++;
+        servingCountEl.textContent = servings;
+        updateDoseSummary();
+      }
+    });
+
+    nowBtn.addEventListener('click', () => {
+        useCurrentTime = true;
+        nowBtn.classList.add('selected');
+        timeBtn.classList.remove('selected');
+        timePicker.classList.add('hidden');
+        selectedTime = new Date();
+        selectedTime.setMinutes(0, 0, 0);
+        updateAddButtonState();
+    });
+
+    timeBtn.addEventListener('click', () => {
+        useCurrentTime = false;
+        timeBtn.classList.add('selected');
+        nowBtn.classList.remove('selected');
+        timePicker.classList.remove('hidden');
+        generateTimePicker();
+        updateAddButtonState();
+    });
+
+    calculateBtn.addEventListener('click', () => {
+      if (selectedDrink && selectedTime) {
+        const newEntry = {
+          ...selectedDrink,
+          amount: selectedDrink.amount * servings,
+          time: new Date(selectedTime)
+        };
+        caffeineLog.push(newEntry);
+        caffeineLog.sort((a, b) => a.time - b.time);
+        saveLogToLocalStorage();
+        updateTimeline();
+        
+        // Clear selections and reset servings
+        drinkButtons.forEach(dBtn => dBtn.classList.remove('selected'));
+        document.querySelectorAll('.time-option').forEach(tBtn => tBtn.classList.remove('selected'));
+        doseSummaryEl.classList.remove('show');
+        selectedDrink = null;
+        servings = 1;
+        servingCountEl.textContent = '1';
+        nowBtn.click();
+      }
+    });
+
+    resetBtn.addEventListener('click', resetApp);
+
+    // Initial setup
+    loadLogFromLocalStorage();
+    updateTimeline();
+    nowBtn.click();
 });
 </script>
 </body>
