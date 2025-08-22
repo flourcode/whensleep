@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>HafCaf - See when caffeine clears your system for better sleep</title>
+<title>HafCaf</title>
 <meta name="description" content="See exactly how much caffeine will be in your system at bedtime." />
 <style>
 :root {
@@ -161,6 +161,7 @@ body {
  color: white;
 }
 
+
 .drink-name {
  font-weight: 600;
  font-size: 17px;
@@ -265,7 +266,7 @@ body {
  background: rgba(255, 255, 255, 0.05);
  border-radius: 12px;
  padding: 20px;
- margin-bottom: 16px; /* Reduced the margin from 24px */
+ margin-bottom: 0;
 }
 
 .time-picker.show {
@@ -297,6 +298,7 @@ body {
  color: white;
 }
 
+
 .total-dose {
   text-align: center;
   padding: 24px;
@@ -307,13 +309,13 @@ body {
   opacity: 0;
   transform: translateY(20px);
   transition: var(--transition);
-  display: none; /* Add this line */
+  display: none;
 }
 
 .total-dose.show {
   opacity: 1;
   transform: translateY(0);
-  display: block; /* Add this line */
+  display: block;
 }
 
 .dose-amount {
@@ -355,21 +357,38 @@ body {
  transform: none;
 }
 
+.empty-state {
+ text-align: center;
+ padding: 60px 40px;
+ color: var(--text-secondary);
+}
+
+.empty-icon {
+ font-size: 48px;
+ margin-bottom: 16px;
+ opacity: 0.6;
+}
+
+.empty-text {
+ font-size: 17px;
+ font-weight: 500;
+}
+
 .results {
-  background: rgba(255, 255, 255, 0.02);
-  padding: 40px;
-  margin-top: 40px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transform: translateY(40px);
-  transition: var(--transition);
-  display: none; /* Add this line */
+ background: rgba(255, 255, 255, 0.02);
+ padding: 40px;
+ margin-top: 40px;
+ border-top: 1px solid rgba(255, 255, 255, 0.1);
+ opacity: 0;
+ transform: translateY(40px);
+ transition: var(--transition);
+ display: none;
 }
 
 .results.show {
-  opacity: 1;
-  transform: translateY(0);
-  display: block; /* Add this line */
+ opacity: 1;
+ transform: translateY(0);
+ display: block;
 }
 
 .bedtime-result {
@@ -607,6 +626,14 @@ body {
  .amount-display {
    font-size: 24px;
  }
+ 
+ .empty-state {
+   padding: 40px 20px;
+ }
+ 
+ .empty-icon {
+   font-size: 40px;
+ }
 }
 </style>
 </head>
@@ -614,7 +641,7 @@ body {
   <div class="app">
     <div class="header">
       <h1 class="title">HafCaf</h1>
-      <p class="subtitle">See how caffeine may affect your sleep.</p>
+      <p class="subtitle">Track your daily caffeine and see bedtime levels</p>
     </div>
     
     <div class="main">
@@ -668,7 +695,7 @@ body {
           <button class="time-option" id="customBtn">Choose Time</button>
         </div>
         <div class="time-picker" id="timePicker">
-          </div>
+        </div>
       </div>
       
       <div class="total-dose" id="totalDose">
@@ -692,392 +719,464 @@ body {
       <div class="drinks-log">
         <h3 class="section-title">Today's Drinks</h3>
         <div id="drinksList">
-          </div>
+        </div>
       </div>
       
       <ul class="timeline" id="timeline">
-        </ul>
+      </ul>
       
       <button class="reset-button" id="resetButton">
         Clear All Drinks
       </button>
     </div>
+    
+    <div id="emptyState" class="empty-state">
+      <div class="empty-icon">🧋</div>
+      <div class="empty-text">Add your first drink to get started</div>
+    </div>
   </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-   // Core constants
-   const CAFFEINE_HALF_LIFE = 5; // hours
-   
-   // State
-   let caffeineLog = [];
-   let selectedDrink = null;
-   let amount = 1;
-   let bedtimeHour = 22; // 10 PM default
-   let selectedTime = new Date();
-   let useCurrentTime = true;
-   
-   // DOM elements
-   const bedtimeBtns = document.querySelectorAll('.bedtime-btn');
-   const drinks = document.querySelectorAll('.drink');
-   const decreaseBtn = document.getElementById('decreaseBtn');
-   const increaseBtn = document.getElementById('increaseBtn');
-   const amountDisplay = document.getElementById('amountDisplay');
-   const nowBtn = document.getElementById('nowBtn');
-   const customBtn = document.getElementById('customBtn');
-   const timePicker = document.getElementById('timePicker');
-   const totalDose = document.getElementById('totalDose');
-   const doseAmount = document.getElementById('doseAmount');
-   const addButton = document.getElementById('addButton');
-   const results = document.getElementById('results');
-   const bedtimeDisplay = document.getElementById('bedtimeDisplay');
-   const caffeineAtBedtime = document.getElementById('caffeineAtBedtime');
-   const caffeineStatus = document.getElementById('caffeineStatus');
-   const caffeineNote = document.getElementById('caffeineNote');
-   const drinksList = document.getElementById('drinksList');
-   const timeline = document.getElementById('timeline');
-   const resetButton = document.getElementById('resetButton');
-   
-   // Local storage functions
-   function saveCaffeineLog() {
-       localStorage.setItem('caffeineLog', JSON.stringify(caffeineLog));
-       localStorage.setItem('caffeineLogDate', new Date().toDateString());
-   }
+    // Core constants
+    const CAFFEINE_HALF_LIFE = 5; // hours
+    
+    // State
+    let caffeineLog = [];
+    let selectedDrink = null;
+    let amount = 1;
+    let bedtimeHour = 22; // 10 PM default
+    let selectedTime = new Date();
+    let useCurrentTime = true;
+    
+    // DOM elements
+    const bedtimeBtns = document.querySelectorAll('.bedtime-btn');
+    const drinks = document.querySelectorAll('.drink');
+    const decreaseBtn = document.getElementById('decreaseBtn');
+    const increaseBtn = document.getElementById('increaseBtn');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const nowBtn = document.getElementById('nowBtn');
+    const customBtn = document.getElementById('customBtn');
+    const timePicker = document.getElementById('timePicker');
+    const totalDose = document.getElementById('totalDose');
+    const doseAmount = document.getElementById('doseAmount');
+    const addButton = document.getElementById('addButton');
+    const results = document.getElementById('results');
+    const bedtimeDisplay = document.getElementById('bedtimeDisplay');
+    const caffeineAtBedtime = document.getElementById('caffeineAtBedtime');
+    const caffeineStatus = document.getElementById('caffeineStatus');
+    const caffeineNote = document.getElementById('caffeineNote');
+    const drinksList = document.getElementById('drinksList');
+    const timeline = document.getElementById('timeline');
+    const resetButton = document.getElementById('resetButton');
+    const emptyState = document.getElementById('emptyState');
+    
+    // Haptic feedback
+    function hapticFeedback() {
+        if (navigator.vibrate) {
+            navigator.vibrate(10);
+        }
+    }
+    
+    // Local storage functions
+    function saveCaffeineLog() {
+        localStorage.setItem('caffeineLog', JSON.stringify(caffeineLog));
+        localStorage.setItem('caffeineLogDate', new Date().toDateString());
+    }
 
-   function loadCaffeineLog() {
-       const savedDate = localStorage.getItem('caffeineLogDate');
-       const today = new Date().toDateString();
-       
-       // Only load if it's from today, otherwise start fresh
-       if (savedDate === today) {
-           const savedLog = localStorage.getItem('caffeineLog');
-           if (savedLog) {
-               caffeineLog = JSON.parse(savedLog).map(entry => ({
-                   ...entry,
-                   time: new Date(entry.time) // Convert back to Date object
-               }));
-           }
-       } else {
-           // Clear old data if it's a new day
-           localStorage.removeItem('caffeineLog');
-           localStorage.removeItem('caffeineLogDate');
-           caffeineLog = [];
-       }
-   }
-   
-   // Core calculation
-   function calculateCaffeineAtTime(targetTime) {
-       let total = 0;
-       caffeineLog.forEach(entry => {
-           const hoursElapsed = (targetTime - entry.time) / (1000 * 60 * 60);
-           if (hoursElapsed >= 0) {
-               total += entry.amount * Math.pow(0.5, hoursElapsed / CAFFEINE_HALF_LIFE);
-           }
-       });
-       return total;
-   }
-   
-   // Get bedtime for today/tomorrow
-   function getBedtime() {
-       const now = new Date();
-       const bedtime = new Date();
-       bedtime.setHours(bedtimeHour, 0, 0, 0);
-       
-       // If bedtime has passed today, use tomorrow
-       if (bedtime.getTime() <= now.getTime()) {
-           bedtime.setDate(bedtime.getDate() + 1);
-       }
-       
-       return bedtime;
-   }
-   
-   // Format time display
-   function formatTime(date) {
-       const hours = date.getHours();
-       let displayHour = hours;
-       let ampm = 'AM';
-       
-       if (hours >= 12) {
-           ampm = 'PM';
-           if (hours > 12) displayHour = hours - 12;
-       }
-       if (hours === 0) displayHour = 12;
-       
-       return `${displayHour} ${ampm}`;
-   }
-   
-   // Generate time picker options
-   function generateTimePicker() {
-       timePicker.innerHTML = '';
-       const now = new Date();
-       
-       // Generate times from 5 AM today to current time + 8 hours
-       for (let i = 5; i <= 23; i++) {
-           const time = new Date();
-           time.setHours(i, 0, 0, 0);
-           
-           // Skip future times beyond reasonable planning horizon
-           if (time.getTime() > now.getTime() + 8 * 60 * 60 * 1000) continue;
-           
-           const btn = document.createElement('button');
-           btn.className = 'time-btn';
-           btn.textContent = formatTime(time);
-           btn.dataset.hour = i;
-           
-           btn.addEventListener('click', () => {
-               document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
-               btn.classList.add('selected');
-               selectedTime = new Date();
-               selectedTime.setHours(parseInt(btn.dataset.hour), 0, 0, 0);
-               updateState();
-           });
-           
-           timePicker.appendChild(btn);
-       }
-   }
-   
-   // Get caffeine level description
-   function getCaffeineDescription(amount) {
-       if (amount < 5) {
-           return {
-               status: 'Perfect for sleep',
-               note: 'No active caffeine in your system',
-               class: 'low'
-           };
-       } else if (amount < 25) {
-           return {
-               status: 'Minimal impact',
-               note: 'Very low caffeine levels remaining',
-               class: 'low'
-           };
-       } else if (amount < 50) {
-           return {
-               status: 'May affect sleep quality',
-               note: 'Moderate caffeine levels remaining',
-               class: 'medium'
-           };
-       } else {
-           return {
-               status: 'Will likely disrupt sleep',
-               note: 'High caffeine levels remaining',
-               class: 'high'
-           };
-       }
-   }
-   
-   // Update drinks log display
-   function updateDrinksList() {
-       drinksList.innerHTML = '';
-       
-       // Sort drinks by time
-       const sortedDrinks = [...caffeineLog].sort((a, b) => a.time - b.time);
-       
-       sortedDrinks.forEach((drink, index) => {
-           const entry = document.createElement('div');
-           entry.className = 'drink-entry';
-           
-           const now = new Date();
-           const isToday = drink.time.toDateString() === now.toDateString();
-           const timeDisplay = isToday ? formatTime(drink.time) : 'Yesterday ' + formatTime(drink.time);
-           
-           entry.innerHTML = `
-               <div class="drink-info">
-                   <div class="drink-entry-name">${drink.name}</div>
-                   <div class="drink-entry-details">${drink.amount}mg at ${timeDisplay}</div>
-               </div>
-               <button class="delete-btn" data-index="${index}">×</button>
-           `;
-           
-           drinksList.appendChild(entry);
-       });
-       
-       // Add delete event listeners
-       document.querySelectorAll('.delete-btn').forEach(btn => {
-           btn.addEventListener('click', () => {
-               const index = parseInt(btn.dataset.index);
-               caffeineLog.splice(index, 1);
-               saveCaffeineLog(); // Save after deleting
-               updateState();
-           });
-       });
-   }
-   
-   // Update UI state
-   function updateState() {
-       // Update amount controls
-       decreaseBtn.disabled = amount <= 1;
-       increaseBtn.disabled = amount >= 10;
-       amountDisplay.textContent = amount;
-       
-       // Update bedtime display
-       const bedtime = getBedtime();
-       const isToday = bedtime.toDateString() === new Date().toDateString();
-       bedtimeDisplay.textContent = `${isToday ? 'Today' : 'Tomorrow'} at ${formatTime(bedtime)}`;
-       
-       // Update total dose display
-       if (selectedDrink) {
-           const total = selectedDrink.amount * amount;
-           doseAmount.textContent = `${total}mg`;
-           totalDose.classList.add('show');
-           addButton.disabled = false;
-       } else {
-           totalDose.classList.remove('show');
-           addButton.disabled = true;
-       }
-       
-       // Update results if there are drinks
-       if (caffeineLog.length > 0) {
-           updateResults();
-           updateDrinksList();
-           results.classList.add('show');
-       } else {
-           results.classList.remove('show');
-       }
-   }
-   
-   // Update main results display
-   function updateResults() {
-       const bedtime = getBedtime();
-       const caffeineAmount = calculateCaffeineAtTime(bedtime);
-       const description = getCaffeineDescription(caffeineAmount);
-       
-       // Update main bedtime result
-       caffeineAtBedtime.textContent = `${Math.round(caffeineAmount)}mg`;
-       caffeineAtBedtime.className = `caffeine-at-bedtime ${description.class}`;
-       caffeineStatus.textContent = description.status;
-       caffeineNote.textContent = description.note;
-       
-       // Update timeline
-       updateTimeline();
-   }
-   
-   // Generate timeline visualization
-   function updateTimeline() {
-       timeline.innerHTML = '';
-       const currentTime = new Date();
-       const maxCaffeine = Math.max(100, calculateCaffeineAtTime(currentTime));
-       
-       for (let i = 0; i <= 12; i++) {
-           const time = new Date(currentTime.getTime() + i * 60 * 60 * 1000);
-           const caffeine = calculateCaffeineAtTime(time);
-           
-           if (caffeine < 1 && i > 2) break;
-           
-           const item = document.createElement('li');
-           item.className = 'timeline-item';
-           item.style.animationDelay = `${i * 0.1}s`;
-           
-           const percentage = Math.max(5, (caffeine / maxCaffeine) * 100);
-           let fillClass = 'fill-clear';
-           
-           if (caffeine > 50) fillClass = 'fill-high';
-           else if (caffeine > 25) fillClass = 'fill-medium';
-           else if (caffeine > 5) fillClass = 'fill-low';
-           
-           item.innerHTML = `
-               <div class="timeline-time">${formatTime(time)}</div>
-               <div class="timeline-bar">
-                   <div class="timeline-fill ${fillClass}" style="width: ${percentage}%"></div>
-               </div>
-               <div class="timeline-amount">${Math.round(caffeine)}mg</div>
-           `;
-           
-           timeline.appendChild(item);
-       }
-   }
-   
-   // Event listeners
-   bedtimeBtns.forEach(btn => {
-       btn.addEventListener('click', () => {
-           bedtimeBtns.forEach(b => b.classList.remove('selected'));
-           btn.classList.add('selected');
-           bedtimeHour = parseInt(btn.dataset.hour);
-           updateState();
-       });
-   });
-   
-   drinks.forEach(drink => {
-       drink.addEventListener('click', () => {
-           drinks.forEach(d => d.classList.remove('selected'));
-           drink.classList.add('selected');
-           selectedDrink = {
-               name: drink.dataset.name,
-               amount: parseInt(drink.dataset.caffeine)
-           };
-           updateState();
-       });
-   });
-   
-   decreaseBtn.addEventListener('click', () => {
-       if (amount > 1) {
-           amount--;
-           updateState();
-       }
-   });
-   
-   increaseBtn.addEventListener('click', () => {
-       if (amount < 10) {
-           amount++;
-           updateState();
-       }
-   });
-   
-   nowBtn.addEventListener('click', () => {
-       useCurrentTime = true;
-       nowBtn.classList.add('selected');
-       customBtn.classList.remove('selected');
-       timePicker.classList.remove('show');
-       selectedTime = new Date();
-       updateState();
-   });
-   
-   customBtn.addEventListener('click', () => {
-       useCurrentTime = false;
-       customBtn.classList.add('selected');
-       nowBtn.classList.remove('selected');
-       timePicker.classList.add('show');
-       generateTimePicker();
-       updateState();
-   });
-   
-   addButton.addEventListener('click', () => {
-       if (selectedDrink) {
-           const drinkTime = useCurrentTime ? new Date() : new Date(selectedTime);
-           
-           caffeineLog.push({
-               ...selectedDrink,
-               amount: selectedDrink.amount * amount,
-               time: drinkTime
-           });
-           
-           saveCaffeineLog(); // Save after adding
-           
-           // Reset selection
-           drinks.forEach(d => d.classList.remove('selected'));
-           selectedDrink = null;
-           amount = 1;
-           
-           // Reset to "Now" option
-           nowBtn.click();
-           
-           updateState();
-       }
-   });
-   
-   resetButton.addEventListener('click', () => {
-       caffeineLog = [];
-       localStorage.removeItem('caffeineLog'); // Clear storage
-       localStorage.removeItem('caffeineLogDate');
-       drinks.forEach(d => d.classList.remove('selected'));
-       selectedDrink = null;
-       amount = 1;
-       nowBtn.click();
-       updateState();
-   });
-   
-   // Initialize
-   loadCaffeineLog(); // Load saved drinks first
-   updateState();
+    function loadCaffeineLog() {
+        const savedDate = localStorage.getItem('caffeineLogDate');
+        const today = new Date().toDateString();
+        
+        // Only load if it's from today, otherwise start fresh
+        if (savedDate === today) {
+            const savedLog = localStorage.getItem('caffeineLog');
+            if (savedLog) {
+                caffeineLog = JSON.parse(savedLog).map(entry => ({
+                    ...entry,
+                    time: new Date(entry.time) // Convert back to Date object
+                }));
+            }
+        } else {
+            // Clear old data if it's a new day
+            localStorage.removeItem('caffeineLog');
+            localStorage.removeItem('caffeineLogDate');
+            caffeineLog = [];
+        }
+    }
+    
+    // Smart defaults
+    function loadSmartDefaults() {
+        const savedBedtime = localStorage.getItem('preferredBedtime');
+        if (savedBedtime) {
+            bedtimeHour = parseInt(savedBedtime);
+            bedtimeBtns.forEach(btn => {
+                btn.classList.remove('selected');
+                if (parseInt(btn.dataset.hour) === bedtimeHour) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+    }
+    
+    function saveSmartDefaults() {
+        localStorage.setItem('preferredBedtime', bedtimeHour);
+        
+        // Save drink usage stats
+        const drinkStats = JSON.parse(localStorage.getItem('drinkStats') || '{}');
+        if (selectedDrink) {
+            drinkStats[selectedDrink.name] = (drinkStats[selectedDrink.name] || 0) + 1;
+            localStorage.setItem('drinkStats', JSON.stringify(drinkStats));
+        }
+    }
+    
+    function getMostUsedDrink() {
+        const drinkStats = JSON.parse(localStorage.getItem('drinkStats') || '{}');
+        let mostUsed = null;
+        let maxCount = 0;
+        
+        for (const [drinkName, count] of Object.entries(drinkStats)) {
+            if (count > maxCount) {
+                maxCount = count;
+                mostUsed = drinkName;
+            }
+        }
+        return mostUsed;
+    }
+    
+    
+    // Core calculation
+    function calculateCaffeineAtTime(targetTime) {
+        let total = 0;
+        caffeineLog.forEach(entry => {
+            const hoursElapsed = (targetTime - entry.time) / (1000 * 60 * 60);
+            if (hoursElapsed >= 0) {
+                total += entry.amount * Math.pow(0.5, hoursElapsed / CAFFEINE_HALF_LIFE);
+            }
+        });
+        return total;
+    }
+    
+    // Get bedtime for today/tomorrow
+    function getBedtime() {
+        const now = new Date();
+        const bedtime = new Date();
+        bedtime.setHours(bedtimeHour, 0, 0, 0);
+        
+        // If bedtime has passed today, use tomorrow
+        if (bedtime.getTime() <= now.getTime()) {
+            bedtime.setDate(bedtime.getDate() + 1);
+        }
+        
+        return bedtime;
+    }
+    
+    // Format time display
+    function formatTime(date) {
+        const hours = date.getHours();
+        let displayHour = hours;
+        let ampm = 'AM';
+        
+        if (hours >= 12) {
+            ampm = 'PM';
+            if (hours > 12) displayHour = hours - 12;
+        }
+        if (hours === 0) displayHour = 12;
+        
+        return `${displayHour} ${ampm}`;
+    }
+    
+    // Generate time picker options
+    function generateTimePicker() {
+        timePicker.innerHTML = '';
+        const now = new Date();
+        
+        // Generate times from 5 AM today to current time + 8 hours
+        for (let i = 5; i <= 23; i++) {
+            const time = new Date();
+            time.setHours(i, 0, 0, 0);
+            
+            // Skip future times beyond reasonable planning horizon
+            if (time.getTime() > now.getTime() + 8 * 60 * 60 * 1000) continue;
+            
+            const btn = document.createElement('button');
+            btn.className = 'time-btn';
+            btn.textContent = formatTime(time);
+            btn.dataset.hour = i;
+            
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTime = new Date();
+                selectedTime.setHours(parseInt(btn.dataset.hour), 0, 0, 0);
+                hapticFeedback();
+                updateState();
+            });
+            
+            timePicker.appendChild(btn);
+        }
+    }
+    
+    // Get caffeine level description
+    function getCaffeineDescription(amount) {
+        if (amount < 5) {
+            return {
+                status: 'Perfect for sleep',
+                note: 'No active caffeine in your system',
+                class: 'low'
+            };
+        } else if (amount < 25) {
+            return {
+                status: 'Minimal impact',
+                note: 'Very low caffeine levels remaining',
+                class: 'low'
+            };
+        } else if (amount < 50) {
+            return {
+                status: 'May affect sleep quality',
+                note: 'Moderate caffeine levels remaining',
+                class: 'medium'
+            };
+        } else {
+            return {
+                status: 'Will likely disrupt sleep',
+                note: 'High caffeine levels remaining',
+                class: 'high'
+            };
+        }
+    }
+    
+    // Update drinks log display
+    function updateDrinksList() {
+        drinksList.innerHTML = '';
+        
+        // Sort drinks by time
+        const sortedDrinks = [...caffeineLog].sort((a, b) => a.time - b.time);
+        
+        sortedDrinks.forEach((drink, index) => {
+            const entry = document.createElement('div');
+            entry.className = 'drink-entry';
+            
+            const now = new Date();
+            const isToday = drink.time.toDateString() === now.toDateString();
+            const timeDisplay = isToday ? formatTime(drink.time) : 'Yesterday ' + formatTime(drink.time);
+            
+            entry.innerHTML = `
+                <div class="drink-info">
+                    <div class="drink-entry-name">${drink.name}</div>
+                    <div class="drink-entry-details">${drink.amount}mg at ${timeDisplay}</div>
+                </div>
+                <button class="delete-btn" data-index="${index}">×</button>
+            `;
+            
+            drinksList.appendChild(entry);
+        });
+        
+        // Add delete event listeners
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.index);
+                caffeineLog.splice(index, 1);
+                saveCaffeineLog();
+                hapticFeedback();
+                updateState();
+                showSmartTip();
+            });
+        });
+    }
+    
+    // Update UI state
+    function updateState() {
+        // Update amount controls
+        decreaseBtn.disabled = amount <= 1;
+        increaseBtn.disabled = amount >= 10;
+        amountDisplay.textContent = amount;
+        
+        // Update bedtime display
+        const bedtime = getBedtime();
+        const isToday = bedtime.toDateString() === new Date().toDateString();
+        bedtimeDisplay.textContent = `${isToday ? 'Today' : 'Tomorrow'} at ${formatTime(bedtime)}`;
+        
+        // Update total dose display
+        if (selectedDrink) {
+            const total = selectedDrink.amount * amount;
+            doseAmount.textContent = `${total}mg`;
+            totalDose.classList.add('show');
+            addButton.disabled = false;
+        } else {
+            totalDose.classList.remove('show');
+            addButton.disabled = true;
+        }
+        
+        // Show/hide empty state and results
+        if (caffeineLog.length > 0) {
+            updateResults();
+            updateDrinksList();
+            results.classList.add('show');
+            emptyState.style.display = 'none';
+        } else {
+            results.classList.remove('show');
+            emptyState.style.display = 'block';
+        }
+    }
+    
+    // Update main results display
+    function updateResults() {
+        const bedtime = getBedtime();
+        const caffeineAmount = calculateCaffeineAtTime(bedtime);
+        const description = getCaffeineDescription(caffeineAmount);
+        
+        // Update main bedtime result
+        caffeineAtBedtime.textContent = `${Math.round(caffeineAmount)}mg`;
+        caffeineAtBedtime.className = `caffeine-at-bedtime ${description.class}`;
+        caffeineStatus.textContent = description.status;
+        caffeineNote.textContent = description.note;
+        
+        // Update timeline
+        updateTimeline();
+    }
+    
+    // Generate timeline visualization
+    function updateTimeline() {
+        timeline.innerHTML = '';
+        const currentTime = new Date();
+        const maxCaffeine = Math.max(100, calculateCaffeineAtTime(currentTime));
+        
+        for (let i = 0; i <= 12; i++) {
+            const time = new Date(currentTime.getTime() + i * 60 * 60 * 1000);
+            const caffeine = calculateCaffeineAtTime(time);
+            
+            if (caffeine < 1 && i > 2) break;
+            
+            const item = document.createElement('li');
+            item.className = 'timeline-item';
+            item.style.animationDelay = `${i * 0.1}s`;
+            
+            const percentage = Math.max(5, (caffeine / maxCaffeine) * 100);
+            let fillClass = 'fill-clear';
+            
+            if (caffeine > 50) fillClass = 'fill-high';
+            else if (caffeine > 25) fillClass = 'fill-medium';
+            else if (caffeine > 5) fillClass = 'fill-low';
+            
+            item.innerHTML = `
+                <div class="timeline-time">${formatTime(time)}</div>
+                <div class="timeline-bar">
+                    <div class="timeline-fill ${fillClass}" style="width: ${percentage}%"></div>
+                </div>
+                <div class="timeline-amount">${Math.round(caffeine)}mg</div>
+            `;
+            
+            timeline.appendChild(item);
+        }
+    }
+    
+    // Event listeners
+    bedtimeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            bedtimeBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            bedtimeHour = parseInt(btn.dataset.hour);
+            hapticFeedback();
+            saveSmartDefaults();
+            updateState();
+        });
+    });
+    
+    drinks.forEach(drink => {
+        drink.addEventListener('click', () => {
+            drinks.forEach(d => d.classList.remove('selected'));
+            drink.classList.add('selected');
+            selectedDrink = {
+                name: drink.dataset.name,
+                amount: parseInt(drink.dataset.caffeine)
+            };
+            hapticFeedback();
+            updateState();
+        });
+    });
+    
+    decreaseBtn.addEventListener('click', () => {
+        if (amount > 1) {
+            amount--;
+            hapticFeedback();
+            updateState();
+        }
+    });
+    
+    increaseBtn.addEventListener('click', () => {
+        if (amount < 10) {
+            amount++;
+            hapticFeedback();
+            updateState();
+        }
+    });
+    
+    nowBtn.addEventListener('click', () => {
+        useCurrentTime = true;
+        nowBtn.classList.add('selected');
+        customBtn.classList.remove('selected');
+        timePicker.classList.remove('show');
+        selectedTime = new Date();
+        hapticFeedback();
+        updateState();
+    });
+    
+    customBtn.addEventListener('click', () => {
+        useCurrentTime = false;
+        customBtn.classList.add('selected');
+        nowBtn.classList.remove('selected');
+        timePicker.classList.add('show');
+        generateTimePicker();
+        hapticFeedback();
+        updateState();
+    });
+    
+    addButton.addEventListener('click', () => {
+        if (selectedDrink) {
+            const drinkTime = useCurrentTime ? new Date() : new Date(selectedTime);
+            
+            caffeineLog.push({
+                ...selectedDrink,
+                amount: selectedDrink.amount * amount,
+                time: drinkTime
+            });
+            
+            saveCaffeineLog();
+            saveSmartDefaults();
+            hapticFeedback();
+            
+            // Reset selection
+            drinks.forEach(d => d.classList.remove('selected'));
+            selectedDrink = null;
+            amount = 1;
+            
+            // Reset to "Now" option
+            nowBtn.click();
+            
+            updateState();
+            showSmartTip();
+        }
+    });
+    
+    resetButton.addEventListener('click', () => {
+        caffeineLog = [];
+        localStorage.removeItem('caffeineLog');
+        localStorage.removeItem('caffeineLogDate');
+        drinks.forEach(d => d.classList.remove('selected'));
+        selectedDrink = null;
+        amount = 1;
+        hapticFeedback();
+        nowBtn.click();
+        updateState();
+        showSmartTip();
+    });
+    
+    // Initialize
+    loadCaffeineLog();
+    loadSmartDefaults();
+    updateState();
+    showSmartTip();
 });
 </script>
 </body>
