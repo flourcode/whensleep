@@ -60,18 +60,56 @@ body {
  min-height: 100vh;
 }
 
+/* Header */
 .header {
  text-align: center;
  padding: 40px 24px 24px;
  background: var(--surface);
 }
 
+.title-container {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 16px;
+ margin-bottom: 8px;
+}
+
+.emoji-badge {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ transition: var(--transition);
+ backdrop-filter: blur(10px);
+}
+
+.title-badge {
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ border-radius: 12px;
+ padding: 12px 20px;
+ transition: var(--transition);
+ backdrop-filter: blur(10px);
+}
+
+.title-badge:hover {
+ background: rgba(0, 122, 255, 0.1);
+ border-color: rgba(0, 122, 255, 0.2);
+ transform: translateY(-1px);
+}
+
 .title {
  font-size: 24px;
  font-weight: 700;
- margin-bottom: 8px;
  letter-spacing: -0.5px;
  color: var(--text);
+ margin: 0;
 }
 
 .subtitle {
@@ -80,6 +118,7 @@ body {
  font-weight: 400;
 }
 
+/* Main Content */
 .main {
  padding: 24px;
 }
@@ -91,6 +130,7 @@ body {
  color: var(--text);
 }
 
+/* Bedtime Selector */
 .bedtime-selector {
  margin-bottom: 24px;
 }
@@ -127,6 +167,7 @@ body {
  color: white;
 }
 
+/* Drink Selector */
 .drink-selector {
  margin-bottom: 24px;
 }
@@ -163,7 +204,6 @@ body {
  color: white;
 }
 
-
 .drink-name {
  font-weight: 600;
  font-size: 17px;
@@ -174,6 +214,8 @@ body {
  font-size: 15px;
  opacity: 0.8;
 }
+
+/* Custom Drink */
 .custom-drink {
  background: rgba(255, 255, 255, 0.05);
  border: 2px solid rgba(255, 255, 255, 0.2);
@@ -249,6 +291,8 @@ body {
  border-color: var(--accent);
  background: rgba(0, 0, 0, 0.5);
 }
+
+/* Amount Selector */
 .amount-selector {
  margin-bottom: 24px;
 }
@@ -299,10 +343,7 @@ body {
  color: var(--accent);
 }
 
-.time-selector {
- /* Removed margin-bottom */
-}
-
+/* Time Selector */
 .time-options {
  display: flex;
  gap: 12px;
@@ -374,24 +415,24 @@ body {
  color: white;
 }
 
-
+/* Total Dose */
 .total-dose {
-  text-align: center;
-  padding: 24px;
-  background: rgba(0, 122, 255, 0.1);
-  border-radius: 16px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(0, 122, 255, 0.2);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: var(--transition);
-  display: none;
+ text-align: center;
+ padding: 24px;
+ background: rgba(0, 122, 255, 0.1);
+ border-radius: 16px;
+ margin-bottom: 24px;
+ border: 1px solid rgba(0, 122, 255, 0.2);
+ opacity: 0;
+ transform: translateY(20px);
+ transition: var(--transition);
+ display: none;
 }
 
 .total-dose.show {
-  opacity: 1;
-  transform: translateY(0);
-  display: block;
+ opacity: 1;
+ transform: translateY(0);
+ display: block;
 }
 
 .dose-amount {
@@ -406,6 +447,7 @@ body {
  font-size: 16px;
 }
 
+/* CTA Button */
 .cta-button {
  width: 100%;
  background: var(--success);
@@ -433,6 +475,7 @@ body {
  transform: none;
 }
 
+/* Empty State */
 .empty-state {
  text-align: center;
  padding: 60px 40px;
@@ -450,6 +493,7 @@ body {
  font-weight: 500;
 }
 
+/* Results */
 .results {
  background: rgba(255, 255, 255, 0.02);
  padding: 40px;
@@ -514,6 +558,7 @@ body {
  line-height: 1.4;
 }
 
+/* Drinks Log */
 .drinks-log {
  margin-bottom: 40px;
 }
@@ -567,6 +612,7 @@ body {
  transform: scale(1.1);
 }
 
+/* Timeline */
 .timeline {
  list-style: none;
 }
@@ -621,6 +667,7 @@ body {
 .fill-low { background: var(--success); }
 .fill-clear { background: var(--success); opacity: 0.5; }
 
+/* Reset Button */
 .reset-button {
  width: 100%;
  background: rgba(255, 255, 255, 0.1);
@@ -641,12 +688,7 @@ body {
  border-color: rgba(255, 255, 255, 0.3);
 }
 
-@keyframes slideIn {
- to {
-   opacity: 1;
-   transform: translateX(0);
- }
-}
+/* Footer */
 .footer {
  background: rgba(255, 255, 255, 0.02);
  border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -716,6 +758,7 @@ body {
  line-height: 1.5;
  color: var(--text-secondary);
 }
+
 .disclaimer {
  margin-top: 32px;
  padding-top: 24px;
@@ -736,6 +779,16 @@ body {
  color: var(--text-secondary);
  opacity: 0.8;
 }
+
+/* Animations */
+@keyframes slideIn {
+ to {
+   opacity: 1;
+   transform: translateX(0);
+ }
+}
+
+/* Responsive Design */
 @media (min-width: 481px) {
  body {
    padding: 20px;
@@ -752,25 +805,25 @@ body {
    padding: 40px 32px 32px;
  }
  
-.title {
-  font-size: 28px;
-}
+ .title {
+   font-size: 28px;
+ }
 
-.title-badge {
-  padding: 14px 24px;
-  border-radius: 14px;
-}
+ .title-badge {
+   padding: 14px 24px;
+   border-radius: 14px;
+ }
 
-.emoji-badge {
-  width: 56px;
-  height: 56px;
-  font-size: 28px;
-  border-radius: 14px;
-}
+ .emoji-badge {
+   width: 56px;
+   height: 56px;
+   font-size: 28px;
+   border-radius: 14px;
+ }
 
-.title-container {
-  gap: 20px;
-}
+ .title-container {
+   gap: 20px;
+ }
  
  .subtitle {
    font-size: 16px;
@@ -780,13 +833,14 @@ body {
    padding: 32px;
  }
  
-.results {
+ .results {
    padding: 32px;
  }
  
  .footer {
    padding: 32px;
  }
+}
 
 @media (max-width: 480px) {
  .app {
@@ -809,25 +863,7 @@ body {
  .amount-display {
    font-size: 24px;
  }
- .title {
-  font-size: 28px;
-}
-
-.title-badge {
-  padding: 14px 24px;
-  border-radius: 14px;
-}
-
-.emoji-badge {
-  width: 56px;
-  height: 56px;
-  font-size: 28px;
-  border-radius: 14px;
-}
-
-.title-container {
-  gap: 20px;
-}
+ 
  .empty-state {
    padding: 40px 20px;
  }
@@ -835,50 +871,6 @@ body {
  .empty-icon {
    font-size: 40px;
  }
-}
-.title-container {
- display: flex;
- align-items: center;
- justify-content: center;
- gap: 16px;
- margin-bottom: 8px;
-}
-
-.emoji-badge {
- width: 48px;
- height: 48px;
- background: rgba(255, 255, 255, 0.05);
- border: 1px solid rgba(255, 255, 255, 0.1);
- border-radius: 12px;
- display: flex;
- align-items: center;
- justify-content: center;
- font-size: 24px;
- transition: var(--transition);
- backdrop-filter: blur(10px);
-}
-
-.title-badge {
- background: rgba(255, 255, 255, 0.05);
- border: 1px solid rgba(255, 255, 255, 0.1);
- border-radius: 12px;
- padding: 12px 20px;
- transition: var(--transition);
- backdrop-filter: blur(10px);
-}
-
-.title-badge:hover {
- background: rgba(0, 122, 255, 0.1);
- border-color: rgba(0, 122, 255, 0.2);
- transform: translateY(-1px);
-}
-
-.title {
- font-size: 24px;
- font-weight: 700;
- letter-spacing: -0.5px;
- color: var(--text);
- margin: 0;
 }
 </style>
 </head>
@@ -890,7 +882,7 @@ body {
       <h1 class="title">😴 Decafu</h1>
     </div>
   </div>
-  <p class="subtitle">Track caffeine intake and see bedtime levels based on its average halflife of 5 hours.</p>
+  <p class="subtitle">Track caffeine intake so you can enjoy your cup and still sleep well.</p>
 </div>
     
     <div class="main">
@@ -1023,10 +1015,10 @@ body {
     </div>
 	<footer class="footer">
   <div class="ad-container">
-  <a href="https://amzn.to/41hPWrH" target="_blank" rel="noopener noreferrer" class="ad-placeholder">
+  <a href="https://amzn.to/4fMZ7Gt" target="_blank" rel="noopener noreferrer" class="ad-placeholder">
     <div class="ad-label">Sponsored</div>
     <div class="ad-content">
-      <div class="ad-text">Premium Coffee & Tea</div>
+      <div class="ad-text">Premium Decaf Coffee & Tea</div>
       <div class="ad-subtext">Find the perfect brew for you.</div>
     </div>
   </a>
