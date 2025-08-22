@@ -344,6 +344,11 @@
     font-size: 17px;
     font-weight: 600;
     text-align: right;
+    transition: color 0.2s ease;
+  }
+  
+  .timeline-time.tomorrow {
+    color: var(--text-secondary);
   }
   
   .timeline-amount {
@@ -581,6 +586,7 @@
     }
     
     .timeline-item {
+      display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
@@ -596,7 +602,7 @@
   <div class="container">
     <div class="app">
       <div class="header">
-        <h1 class="title">When Will You Sleep?</h1>
+        <h1 class="title">When Sleep?</h1>
         <p class="subtitle">See exactly when caffeine clears your system</p>
       </div>
       
@@ -660,18 +666,13 @@
         
         <div class="sleep-recommendation">
           <div class="sleep-time" id="sleepTime"></div>
-          <div class="sleep-note">Safe bedtime for good sleep</div>
+          <div class="sleep-note" id="sleepNote">Safe bedtime for good sleep</div>
         </div>
         
         <button class="reset-btn" id="resetBtn">Clear All Drinks</button>
       </div>
       
       <div class="info-section">
-        <div class="disclaimer">
-          <div class="disclaimer-text">
-            ⚠️ This is not medical advice and should not be relied upon for actual sleep management
-          </div>
-        </div>
         
         <h3 class="info-title">How It Works 🧠</h3>
         <p class="info-text">
@@ -683,7 +684,9 @@
       </div>
       
       <div class="footer">
-        Based on 5-hour caffeine half-life
+        Based on 5-hour caffeine half-life. This is not medical advice and should not be relied upon for actual sleep management.
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -693,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Core Logic ---
     const CAFFEINE_HALF_LIFE = 5; // hours
     const SLEEP_READY_THRESHOLD = 5; // mg
+    let BEDTIME_HOUR = 22; // 10 PM default
 
     let caffeineLog = [];
 
@@ -712,13 +716,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('results');
     const timelineList = document.getElementById('timeline');
     const sleepTimeEl = document.getElementById('sleepTime');
+    const sleepNoteEl = document.getElementById('sleepNote');
     const resetBtn = document.getElementById('resetBtn');
+    const bedtimePickerContainer = document.createElement('div');
+    bedtimePickerContainer.id = 'bedtimePicker';
+    bedtimePickerContainer.className = 'input-group';
+    bedtimePickerContainer.innerHTML = `
+      <label class="label">Desired Bedtime</label>
+      <div class="time-grid" id="bedtimeTimeGrid"></div>
+    `;
+    document.querySelector('.input-section').appendChild(bedtimePickerContainer);
+    const bedtimeTimeGrid = document.getElementById('bedtimeTimeGrid');
 
     // --- State Variables ---
     let selectedDrink = null;
     let selectedTime = null;
     let servings = 1;
     let useCurrentTime = true;
+    let selectedBedtimeHour = BEDTIME_HOUR;
 
     // --- Local Storage Management ---
     function saveLogToLocalStorage() {
@@ -790,15 +805,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetTime = new Date(startTime.getTime() + i * 60 * 60 * 1000);
         const currentCaffeine = calculateCaffeineAtTime(targetTime);
         const status = getStatusBadge(currentCaffeine);
+        const isTomorrow = targetTime.getDate() > new Date().getDate();
 
         // Only add items if the status has changed from the previous hour
         if (status.name !== previousStatus && status.name !== 'Sleep Ready') {
           const item = document.createElement('li');
           item.className = 'timeline-item';
+          const timeClass = isTomorrow ? 'tomorrow' : '';
           item.innerHTML = `
             <div class="timeline-status ${status.class}">${status.name}</div>
             <div class="timeline-amount">${Math.round(currentCaffeine)}mg</div>
-            <div class="timeline-time">${formatTime(targetTime)}</div>
+            <div class="timeline-time ${timeClass}">${formatTime(targetTime)}</div>
           `;
           timelineList.appendChild(item);
           previousStatus = status.name;
@@ -808,19 +825,52 @@ document.addEventListener('DOMContentLoaded', () => {
       // Always show the final Sleep Ready entry
       const finalItem = document.createElement('li');
       finalItem.className = 'timeline-item';
+      
+      const isTomorrow = sleepReadyTime.getDate() > new Date().getDate();
+      const timeClass = isTomorrow ? 'tomorrow' : '';
+
       finalItem.innerHTML = `
         <div class="timeline-status ${getStatusBadge(0).class}">Sleep Ready</div>
         <div class="timeline-amount"><5mg</div>
-        <div class="timeline-time">${formatTime(sleepReadyTime)}</div>
+        <div class="timeline-time ${timeClass}">${formatTime(sleepReadyTime)}</div>
       `;
       timelineList.appendChild(finalItem);
       
-      sleepTimeEl.textContent = formatTimeWithTomorrow(sleepReadyTime, new Date());
+      // --- Final result box logic ---
+      const bedtime = new Date();
+      bedtime.setHours(selectedBedtimeHour, 0, 0, 0);
+      if (bedtime.getTime() < new Date().getTime()) {
+        bedtime.setDate(bedtime.getDate() + 1);
+      }
+      
+      const caffeineAtBedtime = calculateCaffeineAtTime(bedtime);
+      const bedtimeTime = formatTime(bedtime);
+      
+      let finalTimeText = '';
+      let finalNoteText = '';
+      
+      if (caffeineAtBedtime > SLEEP_READY_THRESHOLD) {
+        finalTimeText = `${Math.round(caffeineAtBedtime)}mg at ${bedtimeTime}`;
+        finalNoteText = 'Active caffeine level at your desired bedtime';
+        sleepTimeEl.classList.remove('tomorrow');
+      } else {
+        finalTimeText = `${formatTime(sleepReadyTime)}`;
+        if (sleepReadyTime.getDate() > new Date().getDate()) {
+           finalTimeText += ' Tomorrow';
+           sleepTimeEl.classList.add('tomorrow');
+        } else {
+           sleepTimeEl.classList.remove('tomorrow');
+        }
+        finalNoteText = 'Time you will reach a negligible dose';
+      }
 
+      sleepTimeEl.textContent = finalTimeText;
+      sleepNoteEl.textContent = finalNoteText;
+      
       resultsSection.classList.add('show');
       resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
-
+    
     function updateDoseSummary() {
       if (!selectedDrink) return;
       
@@ -845,8 +895,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateTimePicker() {
       timeGrid.innerHTML = '';
-      const now = new Date();
-      const currentHour = now.getHours();
       
       for (let i = 0; i < 24; i++) {
           const button = document.createElement('button');
@@ -872,6 +920,27 @@ document.addEventListener('DOMContentLoaded', () => {
           timeGrid.appendChild(button);
       }
     }
+    
+    function generateBedtimePicker() {
+      bedtimeTimeGrid.innerHTML = '';
+      
+      for (let i = 21; i <= 23; i++) { // 9 PM to 11 PM
+        const button = document.createElement('button');
+        button.className = 'time-option bedtime-option';
+        button.textContent = formatTime(new Date().setHours(i, 0, 0));
+        button.dataset.hour = i;
+        if (i === BEDTIME_HOUR) {
+          button.classList.add('selected');
+        }
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.bedtime-option').forEach(opt => opt.classList.remove('selected'));
+          button.classList.add('selected');
+          selectedBedtimeHour = parseInt(button.dataset.hour);
+          updateTimeline();
+        });
+        bedtimeTimeGrid.appendChild(button);
+      }
+    }
 
     // --- Helper Functions ---
     function formatTime(date) {
@@ -887,18 +956,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hours === 0) displayHour = 12;
       
       return `${displayHour} ${ampm}`;
-    }
-
-    function formatTimeWithTomorrow(sleepTime, startTime) {
-      const sleepDay = sleepTime.getDate();
-      const startDay = startTime.getDate();
-      const timeStr = formatTime(sleepTime);
-      
-      if (sleepDay > startDay || sleepTime.getMonth() > startTime.getMonth()) {
-        return `${timeStr} Tomorrow`;
-      } else {
-        return timeStr;
-      }
     }
 
     function updateAddButtonState() {
@@ -997,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial setup
     loadLogFromLocalStorage();
+    generateBedtimePicker();
     updateTimeline();
     nowBtn.click();
 });
