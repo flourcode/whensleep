@@ -203,17 +203,27 @@ body {
 
 .custom-inputs {
  display: none;
- grid-template-columns: 2fr 1fr;
  gap: 12px;
  margin-top: 16px;
  align-items: center;
 }
 
 .custom-inputs.show {
- display: grid;
+ display: flex;
 }
 
-.custom-name-input,
+.custom-name-input {
+ background: rgba(0, 0, 0, 0.3);
+ border: 1px solid rgba(255, 255, 255, 0.2);
+ border-radius: 8px;
+ padding: 12px;
+ color: white;
+ font-size: 15px;
+ font-weight: 500;
+ transition: var(--transition);
+ flex: 2;
+}
+
 .custom-caffeine-input {
  background: rgba(0, 0, 0, 0.3);
  border: 1px solid rgba(255, 255, 255, 0.2);
@@ -223,6 +233,9 @@ body {
  font-size: 15px;
  font-weight: 500;
  transition: var(--transition);
+ text-align: center;
+ flex: 1;
+ min-width: 80px;
 }
 
 .custom-name-input::placeholder,
@@ -235,10 +248,6 @@ body {
  outline: none;
  border-color: var(--accent);
  background: rgba(0, 0, 0, 0.5);
-}
-
-.custom-caffeine-input {
- text-align: center;
 }
 .amount-selector {
  margin-bottom: 24px;
@@ -925,14 +934,14 @@ body {
           placeholder="Drink name"
           maxlength="25"
         />
-        <input 
-          type="number" 
-          class="custom-caffeine-input" 
-          id="customCaffeine" 
-          placeholder="mg"
-          min="1"
-          max="500"
-        />
+       <input 
+  type="text" 
+  class="custom-caffeine-input" 
+  id="customCaffeine" 
+  placeholder="mg"
+  inputmode="numeric"
+  pattern="[0-9]*"
+/>
       </div>
     </button>
   </div>
@@ -1054,28 +1063,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeline = document.getElementById('timeline');
     const resetButton = document.getElementById('resetButton');
     const emptyState = document.getElementById('emptyState');
-	// Custom drink handling
+// Custom drink handling
 const customDrink = document.getElementById('customDrink');
 const customInputs = document.getElementById('customInputs');
 const customName = document.getElementById('customName');
 const customCaffeine = document.getElementById('customCaffeine');
 
-customDrink.addEventListener('click', () => {
+customDrink.addEventListener('click', (e) => {
+    // Don't trigger if clicking on an input
+    if (e.target.tagName === 'INPUT') {
+        return;
+    }
+    
     drinks.forEach(d => d.classList.remove('selected'));
     customDrink.classList.add('selected');
     customInputs.classList.add('show');
     hapticFeedback();
     
-    // Focus the name input
-    setTimeout(() => customName.focus(), 100);
-    
-    updateCustomSelection();
+    // Focus the name input only if inputs were just shown
+    if (!customInputs.classList.contains('show')) {
+        setTimeout(() => customName.focus(), 100);
+    }
+});
+
+// Prevent input clicks from bubbling up
+customName.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+customCaffeine.addEventListener('click', (e) => {
+    e.stopPropagation();
 });
 
 // Handle input changes
 function updateCustomSelection() {
     const name = customName.value.trim();
-    const caffeine = parseInt(customCaffeine.value);
+    const caffeineText = customCaffeine.value.trim();
+    
+    // Extract numbers only and convert to integer
+    const caffeineNumbers = caffeineText.replace(/[^0-9]/g, '');
+    const caffeine = parseInt(caffeineNumbers);
+    
+    // Update the input to show only numbers
+    if (caffeineText !== caffeineNumbers) {
+        customCaffeine.value = caffeineNumbers;
+    }
+    
+    // Validate range
+    if (caffeine > 500) {
+        customCaffeine.value = '500';
+    }
     
     if (name && caffeine && caffeine > 0) {
         selectedDrink = {
@@ -1093,7 +1130,6 @@ customCaffeine.addEventListener('input', updateCustomSelection);
 
 // Hide custom inputs when other drinks are selected
 drinks.forEach(drink => {
-    const originalListener = drink.onclick;
     drink.addEventListener('click', () => {
         customInputs.classList.remove('show');
         customName.value = '';
